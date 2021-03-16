@@ -16,4 +16,6 @@ data class DomainCurrency(
     val name: String,
     val value: Double,
     val previousValue: Double
-)
+) {
+    fun getDeltaPrice(): Double = previousValue - value
+}
