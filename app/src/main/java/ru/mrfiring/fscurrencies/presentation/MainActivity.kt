@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
@@ -42,6 +43,7 @@ class MainActivity : AppCompatActivity() {
             updateRight(text, it.charCode, it.getValuePerNominal())
         }
 
+        //Update calculations when text in left edit changes
         binding.leftCurrencyValue.addTextChangedListener(object : TextWatcher{
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
@@ -61,6 +63,29 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        //FAB onClick
+        binding.fabRefresh.setOnClickListener{
+            viewModel.onUpdateData()
+        }
+
+        //Loading state observe
+        viewModel.status.observe(this) {
+            when(it){
+                LoadingStatus.LOADING -> {
+                    binding.currencyList.visibility = View.GONE
+                    binding.progressBar.visibility = View.VISIBLE
+                    binding.fabRefresh.visibility = View.GONE
+                }
+                LoadingStatus.DONE ->{
+                    binding.currencyList.visibility = View.VISIBLE
+                    binding.progressBar.visibility = View.GONE
+                    binding.fabRefresh.visibility = View.VISIBLE
+                }
+                LoadingStatus.ERROR -> {
+                    binding.fabRefresh.visibility = View.VISIBLE
+                }
+            }
+        }
 
         setContentView(binding.root)
     }
