@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.container.observe(this) {
             viewModel.viewModelScope.launch {
                 it?.let {
+                    viewModel.updateOldData(it)
                     adapter.submitList(it.currencies)
                 }
             }

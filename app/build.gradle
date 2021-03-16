@@ -72,4 +72,7 @@ dependencies {
     // coroutines for getting off the UI thread
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version_coroutines"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version_coroutines"
+
+    //To work with time easier
+    implementation 'joda-time:joda-time:2.10.10'
 }
