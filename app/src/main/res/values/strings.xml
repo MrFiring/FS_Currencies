@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">FS_Currencies</string>
     <string name="price_format">%1$.2f руб.</string>
+    <string name="price_delta_format">%1$.4f</string>
 </resources>

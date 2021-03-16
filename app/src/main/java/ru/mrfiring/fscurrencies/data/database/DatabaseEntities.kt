@@ -18,7 +18,7 @@ data class DatabaseContainerWithCurrencies(
 
 @Entity
 data class DatabaseContainer(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = false)
     val id: Long,
     val date: String,
     val previousDate: String,

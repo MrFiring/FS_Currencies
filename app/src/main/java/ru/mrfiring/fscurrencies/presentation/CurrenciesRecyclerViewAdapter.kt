@@ -48,7 +48,10 @@ class CurrenciesRecyclerViewAdapter(
                     deltaPrice.setTextColor(Color.RED)
                 }
 
-                deltaPrice.text = dPrice.toString()
+                deltaPrice.text = context.getString(
+                    R.string.price_delta_format,
+                    item.getDeltaPrice()
+                )
             }
         }
 
