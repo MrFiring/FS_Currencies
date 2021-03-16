@@ -3,5 +3,5 @@
     <string name="price_format">%1$.2f руб.</string>
     <string name="price_delta_format">%1$.4f</string>
     <string name="rub">RUB</string>
-    <string name="select_currency">Выберите валюту из списка</string>
+    <string name="select_currency">Выберите валюту</string>
 </resources>
