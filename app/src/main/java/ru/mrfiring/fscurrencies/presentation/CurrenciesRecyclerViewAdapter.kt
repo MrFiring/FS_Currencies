@@ -38,7 +38,7 @@ class CurrenciesRecyclerViewAdapter(
 
                 currentPrice.text = context.getString(
                     R.string.price_format,
-                    item.value
+                    item.getValuePerNominal()
                 )
                 val dPrice = item.getDeltaPrice()
 

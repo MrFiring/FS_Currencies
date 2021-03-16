@@ -18,4 +18,5 @@ data class DomainCurrency(
     val previousValue: Double
 ) {
     fun getDeltaPrice(): Double = previousValue - value
+    fun getValuePerNominal(): Double = value / nominal
 }
