@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import ru.mrfiring.fscurrencies.domain.DomainContainerWithCurrencies
 import ru.mrfiring.fscurrencies.domain.DomainCurrency
@@ -17,6 +18,7 @@ enum class LoadingStatus{
     LOADING, ERROR, DONE
 }
 
+@HiltViewModel
 class MainViewModel @Inject constructor(
     application: Application,
     private val getContainerWithCurrenciesLiveDataUseCase: GetContainerWithCurrenciesLiveDataUseCase,
