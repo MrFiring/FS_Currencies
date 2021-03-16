@@ -1,13 +1,13 @@
-package ru.mrfiring.fscurrencies.domain
+package ru.mrfiring.fscurrencies.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import ru.mrfiring.fscurrencies.data.asDatabaseObject
-import ru.mrfiring.fscurrencies.data.asDomainObject
 import ru.mrfiring.fscurrencies.data.database.CurrencyDao
 import ru.mrfiring.fscurrencies.data.network.CurrenciesService
+import ru.mrfiring.fscurrencies.domain.CurrencyRepository
+import ru.mrfiring.fscurrencies.domain.DomainContainerWithCurrencies
 import javax.inject.Inject
 
 class CurrencyRepositoryImpl @Inject constructor(
@@ -24,7 +24,7 @@ class CurrencyRepositoryImpl @Inject constructor(
 
     override suspend fun fetchCurrencies(fromCache: Boolean) {
         withContext(Dispatchers.IO){
-            if(!fromCache) {
+            if(!fromCache || currencyDao.getContainersCount() == 0) {
                 val networkContainer = service.getCurrenciesContainer()
                 currencyDao.deleteAllContainers()
                 currencyDao.deleteAllCurrencies()

@@ -5,7 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ru.mrfiring.fscurrencies.domain.CurrencyRepository
-import ru.mrfiring.fscurrencies.domain.CurrencyRepositoryImpl
+import ru.mrfiring.fscurrencies.data.CurrencyRepositoryImpl
 import javax.inject.Singleton
 
 
