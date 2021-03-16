@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 
 interface CurrencyRepository {
 
-    fun getContainerWithCurrenciesLiveData(): LiveData<DomainContainerWithCurrencies>
+    fun getContainerWithCurrenciesLiveData(): LiveData<DomainContainerWithCurrencies?>
 
     suspend fun fetchCurrencies(fromCache: Boolean)
 }

@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.mrfiring.fscurrencies.domain.DomainContainerWithCurrencies
+import ru.mrfiring.fscurrencies.domain.DomainCurrency
 import ru.mrfiring.fscurrencies.domain.FetchCurrenciesUseCase
 import ru.mrfiring.fscurrencies.domain.GetContainerWithCurrenciesLiveDataUseCase
 import java.io.IOException
@@ -22,7 +23,7 @@ class MainViewModel @Inject constructor(
     private val fetchCurrenciesUseCase: FetchCurrenciesUseCase
 ): AndroidViewModel(application) {
 
-    val container: LiveData<DomainContainerWithCurrencies> =
+    val container: LiveData<DomainContainerWithCurrencies?> =
         getContainerWithCurrenciesLiveDataUseCase()
 
     private val _status = MutableLiveData<LoadingStatus>()
@@ -46,4 +47,8 @@ class MainViewModel @Inject constructor(
     }
 
     fun onUpdateData() = fetchData(false)
+
+    fun onItemClick(item: DomainCurrency) {
+
+    }
 }

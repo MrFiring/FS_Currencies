@@ -6,7 +6,7 @@ import javax.inject.Inject
 class GetContainerWithCurrenciesLiveDataUseCase @Inject constructor(
     private val currencyRepository: CurrencyRepository
 ) {
-    operator fun invoke(): LiveData<DomainContainerWithCurrencies> {
+    operator fun invoke(): LiveData<DomainContainerWithCurrencies?> {
         return currencyRepository.getContainerWithCurrenciesLiveData()
     }
 }

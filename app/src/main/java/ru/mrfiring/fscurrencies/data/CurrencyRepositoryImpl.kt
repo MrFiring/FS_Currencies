@@ -14,11 +14,11 @@ class CurrencyRepositoryImpl @Inject constructor(
     private val currencyDao: CurrencyDao,
     private val service: CurrenciesService
 ): CurrencyRepository {
-    override fun getContainerWithCurrenciesLiveData(): LiveData<DomainContainerWithCurrencies>{
+    override fun getContainerWithCurrenciesLiveData(): LiveData<DomainContainerWithCurrencies?>{
         return Transformations.map(currencyDao.getContainersWithCurrencies()){
             it.map { container ->
                 container.asDomainObject()
-            }.first()
+            }.firstOrNull()
         }
     }
 
