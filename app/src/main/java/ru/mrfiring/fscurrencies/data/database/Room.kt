@@ -2,14 +2,13 @@ package ru.mrfiring.fscurrencies.data.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import kotlinx.coroutines.selects.select
 
 @Dao
 interface CurrencyDao{
 
     @Transaction
     @Query("select * from databasecontainer")
-    fun getContainerWithCurrencies(): LiveData<DatabaseContainerWithCurrencies>
+    fun getContainersWithCurrencies(): LiveData<List<DatabaseContainerWithCurrencies>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertContainer(item: DatabaseContainer)
