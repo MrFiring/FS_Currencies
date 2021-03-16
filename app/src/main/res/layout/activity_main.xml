@@ -32,12 +32,13 @@
             android:layout_height="match_parent">
 
             <EditText
-                android:id="@+id/editTextNumber"
+                android:id="@+id/leftCurrencyValue"
                 android:layout_width="124dp"
                 android:layout_height="54dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="24dp"
                 android:ems="10"
                 android:inputType="number"
+                android:text="1"
                 android:textAlignment="center"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -46,10 +47,10 @@
                 tools:text="1" />
 
             <EditText
-                android:id="@+id/editTextNumber2"
+                android:id="@+id/rightCurrencyValue"
                 android:layout_width="134dp"
                 android:layout_height="57dp"
-                android:layout_marginEnd="4dp"
+                android:layout_marginEnd="24dp"
                 android:ems="10"
                 android:inputType="number"
                 android:textAlignment="center"
@@ -59,41 +60,30 @@
                 app:layout_constraintVertical_bias="0.5"
                 tools:text="87" />
 
-            <ImageButton
-                android:id="@+id/imageButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:backgroundTint="#00FAFAFA"
-                android:tint="#000000"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/editTextNumber2"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toEndOf="@+id/editTextNumber"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@android:drawable/ic_popup_sync" />
-
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/leftCurrencyName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
-                android:text="TextView"
-                app:layout_constraintBottom_toTopOf="@+id/editTextNumber"
-                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginBottom="8dp"
+                android:text="@string/rub"
+                app:layout_constraintBottom_toTopOf="@+id/leftCurrencyValue"
+                app:layout_constraintEnd_toEndOf="@+id/leftCurrencyValue"
+                app:layout_constraintStart_toStartOf="@+id/leftCurrencyValue"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.87"
                 tools:text="RUB" />
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/rightCurrencyName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="77dp"
-                android:text="TextView"
-                app:layout_constraintBottom_toTopOf="@+id/editTextNumber2"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginBottom="8dp"
+                android:text="@string/select_currency"
+                app:layout_constraintBottom_toTopOf="@+id/rightCurrencyValue"
+                app:layout_constraintEnd_toEndOf="@+id/rightCurrencyValue"
+                app:layout_constraintStart_toStartOf="@+id/rightCurrencyValue"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.87"
                 tools:text="EUR" />
