@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.rightCurrencyName.text = charCode
         binding.rightCurrencyValue.setText(
-            (valuePerNominal * leftCurrent).toString()
+            (leftCurrent / valuePerNominal).toString()
         )
     }
 }
