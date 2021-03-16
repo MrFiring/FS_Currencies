@@ -30,6 +30,10 @@ class MainViewModel @Inject constructor(
     val status: LiveData<LoadingStatus>
     get() = _status
 
+    private val _selectedCurrency = MutableLiveData<DomainCurrency>()
+    val selectedCurrency: LiveData<DomainCurrency>
+    get() = _selectedCurrency
+
 
     init {
         fetchData()
@@ -49,6 +53,6 @@ class MainViewModel @Inject constructor(
     fun onUpdateData() = fetchData(false)
 
     fun onItemClick(item: DomainCurrency) {
-
+        _selectedCurrency.value = item
     }
 }
