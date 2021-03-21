@@ -6,5 +6,5 @@ interface CurrencyRepository {
 
     fun getContainerWithCurrenciesLiveData(): LiveData<DomainContainerWithCurrencies?>
 
-    suspend fun fetchCurrencies(fromCache: Boolean)
+    suspend fun fetchCurrencies(fromCache: Boolean, lastUpdate: String = "")
 }

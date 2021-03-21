@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import org.joda.time.DateTime
 import org.joda.time.Instant
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.ISODateTimeFormat
@@ -46,10 +47,10 @@ class MainViewModel @Inject constructor(
         fetchData()
     }
 
-    private fun fetchData(fromCache: Boolean = true) = viewModelScope.launch {
+    private fun fetchData(fromCache: Boolean = true, lastUpdate: String = "") = viewModelScope.launch {
         try {
             _status.value = LoadingStatus.LOADING
-            fetchCurrenciesUseCase(fromCache)
+            fetchCurrenciesUseCase(fromCache, lastUpdate)
             _status.value = LoadingStatus.DONE
 
         } catch (ex: IOException) {
@@ -64,7 +65,7 @@ class MainViewModel @Inject constructor(
         val date = formatter.parseDateTime(containerWithCurrencies.date)
 
         if(date.plusDays(1).isBeforeNow){
-            fetchData(false)
+            fetchData(false, DateTime.now().toString(formatter))
         }
 
     }
