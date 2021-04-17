@@ -51,6 +51,9 @@ dependencies {
     implementation "com.google.dagger:hilt-android:$version_hilt"
     kapt "com.google.dagger:hilt-compiler:$version_hilt"
 
+    //Fragment KTX
+    implementation "androidx.fragment:fragment-ktx:$version_fragment_ktx"
+
     // ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$version_lifecycle"
 

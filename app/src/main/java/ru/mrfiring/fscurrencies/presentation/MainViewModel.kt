@@ -1,35 +1,26 @@
 package ru.mrfiring.fscurrencies.presentation
 
-import android.app.Application
-import android.util.Log
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.joda.time.DateTime
-import org.joda.time.Instant
 import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.ISODateTimeFormat
 import ru.mrfiring.fscurrencies.domain.DomainContainerWithCurrencies
 import ru.mrfiring.fscurrencies.domain.DomainCurrency
 import ru.mrfiring.fscurrencies.domain.FetchCurrenciesUseCase
 import ru.mrfiring.fscurrencies.domain.GetContainerWithCurrenciesLiveDataUseCase
 import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.*
 import javax.inject.Inject
 
 enum class LoadingStatus {
     LOADING, ERROR, DONE
 }
 
+@HiltViewModel
 class MainViewModel @Inject constructor(
-    application: Application,
     private val getContainerWithCurrenciesLiveDataUseCase: GetContainerWithCurrenciesLiveDataUseCase,
     private val fetchCurrenciesUseCase: FetchCurrenciesUseCase
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     val container: LiveData<DomainContainerWithCurrencies?> =
         getContainerWithCurrenciesLiveDataUseCase()
