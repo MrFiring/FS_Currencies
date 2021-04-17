@@ -45,6 +45,7 @@ class MainViewModel @Inject constructor(
             _status.value = LoadingStatus.DONE
 
         } catch (ex: IOException) {
+            _status.value = LoadingStatus.ERROR
             ex.printStackTrace()
         }
     }

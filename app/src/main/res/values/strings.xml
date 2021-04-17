@@ -4,4 +4,6 @@
     <string name="price_delta_format">%1$.4f</string>
     <string name="rub">RUB</string>
     <string name="select_currency">Выберите валюту</string>
+
+    <string name="no_network">Не удалось получить данные с сервера</string>
 </resources>
