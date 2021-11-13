@@ -5,8 +5,12 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import ru.mrfiring.fscurrencies.domain.CurrencyRepository
-import ru.mrfiring.fscurrencies.data.CurrencyRepositoryImpl
+import ru.mrfiring.fscurrencies.data.datasouce.CurrenciesLocalDataSource
+import ru.mrfiring.fscurrencies.data.datasouce.CurrenciesLocalDataSourceImpl
+import ru.mrfiring.fscurrencies.data.datasouce.CurrenciesRemoteDataSource
+import ru.mrfiring.fscurrencies.data.datasouce.CurrenciesRemoteDataSourceImpl
+import ru.mrfiring.fscurrencies.data.repository.CurrenciesRepositoryImpl
+import ru.mrfiring.fscurrencies.domain.CurrenciesRepository
 import javax.inject.Singleton
 
 
@@ -16,7 +20,19 @@ interface DataModule {
 
     @Singleton
     @Binds
-    fun provideCurrencyRepository(
-        currencyRepositoryImpl: CurrencyRepositoryImpl
-    ): CurrencyRepository
+    fun bindCurrenciesLocalDataSource(
+        dataSource: CurrenciesLocalDataSourceImpl
+    ): CurrenciesLocalDataSource
+
+    @Singleton
+    @Binds
+    fun bindCurrenciesRemoteDataSource(
+        dataSource: CurrenciesRemoteDataSourceImpl
+    ): CurrenciesRemoteDataSource
+
+    @Singleton
+    @Binds
+    fun bindCurrenciesRepository(
+        repositoryImpl: CurrenciesRepositoryImpl
+    ): CurrenciesRepository
 }
