@@ -1,7 +1,9 @@
 package ru.mrfiring.fscurrencies.data.repository
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import ru.mrfiring.fscurrencies.data.asDatabaseObject
 import ru.mrfiring.fscurrencies.data.asDomainObject
 import ru.mrfiring.fscurrencies.data.database.DatabaseContainerWithCurrencies
@@ -17,12 +19,14 @@ class CurrenciesRepositoryImpl @Inject constructor(
 ) : CurrenciesRepository {
 
     override suspend fun get(useCache: Boolean): Flow<List<DomainContainerWithCurrencies>> =
-        if (isCacheAvailable(useCache)) {
-            getDataFromCache()
-        } else {
-            getDataFromNetwork()
+        withContext(Dispatchers.IO) {
+            if (isCacheAvailable(useCache)) {
+                getDataFromCache()
+            } else {
+                getDataFromNetwork()
+            }
+                .map { list -> list.map { it.asDomainObject() } }
         }
-            .map { list -> list.map { it.asDomainObject() } }
 
     private fun isCacheAvailable(useCache: Boolean) =
         useCache && !currenciesLocalDataSource.isCacheEmpty()

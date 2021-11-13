@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.viewModelScope
 import com.google.android.material.snackbar.Snackbar
@@ -14,6 +15,7 @@ import ru.mrfiring.fscurrencies.R
 import ru.mrfiring.fscurrencies.databinding.ActivityMainBinding
 import ru.mrfiring.fscurrencies.presentation.CurrenciesRecyclerViewAdapter
 import ru.mrfiring.fscurrencies.presentation.LoadingStatus
+import ru.mrfiring.fscurrencies.presentation.MainScreenState
 import ru.mrfiring.fscurrencies.presentation.MainViewModel
 
 @AndroidEntryPoint
@@ -23,90 +25,69 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+    private var adapter: CurrenciesRecyclerViewAdapter? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        val adapter = CurrenciesRecyclerViewAdapter(viewModel::onItemClick)
 
+        adapter = CurrenciesRecyclerViewAdapter(viewModel::onItemClick)
         binding.currencyList.adapter = adapter
 
-        viewModel.container.observe(this) {
-            viewModel.viewModelScope.launch {
-                it?.let {
-                    viewModel.updateOldData(it)
-                    adapter.submitList(it.currencies)
-                }
-            }
-        }
-
-        viewModel.selectedCurrency.observe(this) {
-            val text = binding.leftCurrencyValue.text.toString()
-            if (text.isEmpty()) {
-                return@observe
-            }
-            updateRight(text, it.charCode, it.getValuePerNominal())
-        }
-
-        //Update calculations when text in left edit changes
-        binding.leftCurrencyValue.addTextChangedListener { editable ->
-            val text = editable.toString()
-            if (text.isBlank()) {
-                return@addTextChangedListener
-            }
-            viewModel.selectedCurrency.value?.let {
-                updateRight(text, it.charCode, it.getValuePerNominal())
-            }
-        }
-
-        //FAB onClick
-        binding.fabRefresh.setOnClickListener {
-            viewModel.onUpdateData()
-        }
-
-        //Loading state observe
-        viewModel.status.observe(this) {
-            when (it) {
-                LoadingStatus.LOADING -> {
-                    binding.currencyList.visibility = View.GONE
-                    binding.progressBar.visibility = View.VISIBLE
-                    binding.fabRefresh.visibility = View.GONE
-                }
-                LoadingStatus.DONE -> {
-                    binding.currencyList.visibility = View.VISIBLE
-                    binding.progressBar.visibility = View.GONE
-                    binding.fabRefresh.visibility = View.VISIBLE
-                }
-                LoadingStatus.ERROR -> {
-                    binding.fabRefresh.visibility = View.VISIBLE
-                    if(adapter.itemCount > 0) {
-                        binding.currencyList.visibility = View.VISIBLE
-                    }
-                    binding.progressBar.visibility = View.GONE
-                    showErrorSnack()
-                }
-            }
-        }
+        setupListeners()
+        observeState()
 
         setContentView(binding.root)
     }
 
-
-    fun updateRight(value: String, charCode: String, valuePerNominal: Double) {
-        val leftCurrent = value.toInt()
-
-        binding.rightCurrencyName.text = charCode
-        binding.rightCurrencyValue.setText(
-            (leftCurrent / valuePerNominal).toString()
-        )
+    private fun setupListeners() {
+        //FAB onClick
+        binding.fabRefresh.setOnClickListener {
+            viewModel.onUpdateData()
+        }
     }
 
-    private fun showErrorSnack() {
-        val snackBar = Snackbar.make(
-            binding.root,
-            R.string.no_network,
-            Snackbar.LENGTH_SHORT
-        )
-        snackBar.show()
+    private fun observeState() {
+        viewModel.state.observe(this, ::applyState)
     }
 
+    private fun applyState(state: MainScreenState) =
+        when (state) {
+            MainScreenState.Initial -> Unit
+
+            MainScreenState.Loading -> {
+                binding.currencyList.isVisible = false
+                binding.progressBar.isVisible = true
+                binding.fabRefresh.isVisible = false
+            }
+
+            is MainScreenState.Content -> binding.run {
+                currencyList.isVisible = true
+                progressBar.isVisible = false
+                fabRefresh.isVisible = true
+
+                adapter?.submitList(state.currenciesList)
+                state.rightCurrency?.let { currency ->
+                    rightCurrencyName.text = currency.charCode
+                }
+            }
+
+            is MainScreenState.Error -> {
+                binding.fabRefresh.isVisible = true
+                binding.progressBar.isVisible = false
+                showError()
+            }
+        }
+
+    private fun showError() {
+        Snackbar
+            .make(binding.root, R.string.no_network, Snackbar.LENGTH_SHORT)
+            .show()
+    }
+
+    override fun onDestroy() {
+        binding.currencyList.adapter = null
+        adapter = null
+        super.onDestroy()
+    }
 }
