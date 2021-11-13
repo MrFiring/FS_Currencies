@@ -1,4 +1,4 @@
-package ru.mrfiring.fscurrencies.presentation
+package ru.mrfiring.fscurrencies.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -12,6 +12,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.launch
 import ru.mrfiring.fscurrencies.R
 import ru.mrfiring.fscurrencies.databinding.ActivityMainBinding
+import ru.mrfiring.fscurrencies.presentation.CurrenciesRecyclerViewAdapter
+import ru.mrfiring.fscurrencies.presentation.LoadingStatus
+import ru.mrfiring.fscurrencies.presentation.MainViewModel
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {

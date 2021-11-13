@@ -9,6 +9,7 @@ import ru.mrfiring.fscurrencies.domain.DomainContainerWithCurrencies
 import ru.mrfiring.fscurrencies.domain.DomainCurrency
 import ru.mrfiring.fscurrencies.domain.FetchCurrenciesUseCase
 import ru.mrfiring.fscurrencies.domain.GetContainerWithCurrenciesLiveDataUseCase
+import ru.mrfiring.fscurrencies.domain.usecase.GetCurrenciesContainerUseCase
 import java.io.IOException
 import javax.inject.Inject
 
@@ -18,6 +19,7 @@ enum class LoadingStatus {
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
+    private val getCurrenciesContainerUseCase: GetCurrenciesContainerUseCase,
     private val getContainerWithCurrenciesLiveDataUseCase: GetContainerWithCurrenciesLiveDataUseCase,
     private val fetchCurrenciesUseCase: FetchCurrenciesUseCase
 ) : ViewModel() {
@@ -50,6 +52,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    @Deprecated("Must be on the data layer")
     fun updateOldData(
         containerWithCurrencies: DomainContainerWithCurrencies
     ) = viewModelScope.launch {

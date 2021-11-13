@@ -15,7 +15,7 @@ import ru.mrfiring.fscurrencies.data.asDatabaseObject
 import ru.mrfiring.fscurrencies.data.asDomainObject
 import ru.mrfiring.fscurrencies.data.network.CurrenciesService
 import ru.mrfiring.fscurrencies.domain.DomainCurrency
-import ru.mrfiring.fscurrencies.presentation.MainActivity
+import ru.mrfiring.fscurrencies.ui.MainActivity
 import ru.mrfiring.fscurrencies.utils.KTestCase
 import javax.inject.Inject
 
