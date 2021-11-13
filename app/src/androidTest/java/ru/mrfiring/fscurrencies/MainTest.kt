@@ -39,7 +39,7 @@ class MainTest : KTestCase() {
     fun init() {
         hiltRule.inject()
         runBlocking {
-            currencies = service.getCurrenciesContainer()
+            currencies = service.get()
                 .valute
                 .values
                 .toList()

@@ -6,5 +6,5 @@ const val BASE_URL = "https://www.cbr-xml-daily.ru/"
 
 interface CurrenciesService{
     @GET("daily_json.js")
-    suspend fun getCurrenciesContainer(): CurrenciesContainer
+    suspend fun get(): CurrenciesContainer
 }

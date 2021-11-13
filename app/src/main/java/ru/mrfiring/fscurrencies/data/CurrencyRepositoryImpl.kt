@@ -26,7 +26,7 @@ class CurrencyRepositoryImpl @Inject constructor(
     override suspend fun fetchCurrencies(fromCache: Boolean, lastUpdate: String) {
         withContext(Dispatchers.IO){
             if(!fromCache || currencyDao.getContainersCount() == 0) {
-                val networkContainer = service.getCurrenciesContainer()
+                val networkContainer = service.get()
                 currencyDao.deleteAllContainers()
                 currencyDao.deleteAllCurrencies()
 
