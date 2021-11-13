@@ -10,8 +10,8 @@ import ru.mrfiring.fscurrencies.data.network.BASE_URL
 import ru.mrfiring.fscurrencies.data.network.CurrenciesService
 import javax.inject.Singleton
 
-@Module
 @InstallIn(SingletonComponent::class)
+@Module
 object NetworkModule {
 
     @Singleton
@@ -25,5 +25,4 @@ object NetworkModule {
     @Provides
     fun provideStockService(retrofit: Retrofit): CurrenciesService =
         retrofit.create(CurrenciesService::class.java)
-
 }

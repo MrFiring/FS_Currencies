@@ -11,8 +11,8 @@ import ru.mrfiring.fscurrencies.data.database.CurrencyDao
 import ru.mrfiring.fscurrencies.data.database.CurrencyDatabase
 import javax.inject.Singleton
 
-@Module
 @InstallIn(SingletonComponent::class)
+@Module
 object DatabaseModule {
 
     @Singleton
