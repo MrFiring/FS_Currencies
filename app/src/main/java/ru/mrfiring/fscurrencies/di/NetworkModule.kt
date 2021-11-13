@@ -23,7 +23,7 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideStockService(retrofit: Retrofit): CurrenciesService {
-        return retrofit.create(CurrenciesService::class.java)
-    }
+    fun provideStockService(retrofit: Retrofit): CurrenciesService =
+        retrofit.create(CurrenciesService::class.java)
+
 }

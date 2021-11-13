@@ -1,5 +1,6 @@
 package ru.mrfiring.fscurrencies.di
 
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -11,12 +12,11 @@ import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
-object RepositoryModule {
+interface RepositoryModule {
 
     @Singleton
-    @Provides
+    @Binds
     fun provideCurrencyRepository(
         currencyRepositoryImpl: CurrencyRepositoryImpl
-    ): CurrencyRepository = currencyRepositoryImpl
-
+    ): CurrencyRepository
 }

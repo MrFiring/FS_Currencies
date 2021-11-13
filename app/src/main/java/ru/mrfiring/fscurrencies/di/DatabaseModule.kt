@@ -17,19 +17,15 @@ object DatabaseModule {
 
     @Singleton
     @Provides
-    fun provideDatabase(@ApplicationContext context: Context): CurrencyDatabase{
-        return Room.databaseBuilder(
+    fun provideDatabase(@ApplicationContext context: Context): CurrencyDatabase =
+        Room.databaseBuilder(
             context.applicationContext,
             CurrencyDatabase::class.java,
             "currency_db"
         ).build()
 
-    }
-
     @Singleton
     @Provides
-    fun provideCurrencyDao(currencyDatabase: CurrencyDatabase): CurrencyDao{
-        return currencyDatabase.currencyDao
-    }
-
+    fun provideCurrencyDao(currencyDatabase: CurrencyDatabase): CurrencyDao =
+        currencyDatabase.currencyDao
 }
