@@ -9,7 +9,8 @@ sealed class MainScreenState {
     object Loading : MainScreenState()
 
     data class Content(
-        val rightCurrency: DomainCurrency?,
+        val leftCurrency: CurrencyItem = CurrencyItem(),
+        val rightCurrency: CurrencyItem = CurrencyItem(),
         val currenciesList: List<DomainCurrency>,
     ) : MainScreenState()
 
