@@ -8,6 +8,7 @@ import ru.mrfiring.fscurrencies.domain.DomainCurrency
 import ru.mrfiring.fscurrencies.domain.usecase.CalculateCurrencyValueUseCase
 import ru.mrfiring.fscurrencies.domain.usecase.GetCurrenciesContainerUseCase
 import javax.inject.Inject
+import kotlin.time.Duration
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -57,15 +58,24 @@ class MainViewModel @Inject constructor(
                 if (oldValue == newValue) return@ensureContent
 
                 val curSourceCurrency = screenState.leftCurrency.currency
+                val curDestinationCurrency = screenState.rightCurrency.currency
 
-                val newDestinationValue = calculateCurrencyValueUseCase(
-                    sourceValue = newValue,
-                    valuePerNominal = curSourceCurrency?.getValuePerNominal() ?: 0.0
-                )
+                val newDestinationValue = curDestinationCurrency?.let { dest ->
+                    curSourceCurrency?.let { src ->
+                        calculateCurrencyValueUseCase(
+                            sourceCount = newValue,
+                            sourceCurrency = dest,
+                            destinationCurrency = src
+                        )
+                    }
+                } ?: throw IllegalStateException("Both currencies must be determined")
 
                 val newLeftCurrency = screenState.leftCurrency.copy(value = newDestinationValue)
                 val newRightCurrency = screenState.rightCurrency.copy(value = newValue)
-                _state.value = screenState.copy(leftCurrency = newLeftCurrency, rightCurrency = newRightCurrency)
+                _state.value = screenState.copy(
+                    leftCurrency = newLeftCurrency,
+                    rightCurrency = newRightCurrency
+                )
             }
         )
     }
