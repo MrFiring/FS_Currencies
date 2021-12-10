@@ -1,130 +1,115 @@
 package ru.mrfiring.fscurrencies.ui
 
 import android.os.Bundle
-import androidx.activity.viewModels
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
-import androidx.core.widget.addTextChangedListener
-import com.google.android.material.snackbar.Snackbar
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import ru.mrfiring.fscurrencies.R
-import ru.mrfiring.fscurrencies.databinding.ActivityMainBinding
-import ru.mrfiring.fscurrencies.presentation.CurrenciesRecyclerViewAdapter
+import ru.mrfiring.fscurrencies.composables.CurrencyInput
+import ru.mrfiring.fscurrencies.composables.CurrencyList
 import ru.mrfiring.fscurrencies.presentation.MainScreenState
 import ru.mrfiring.fscurrencies.presentation.MainViewModel
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private val viewModel: MainViewModel by viewModels()
-
-    private lateinit var binding: ActivityMainBinding
-
-    private var adapter: CurrenciesRecyclerViewAdapter? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
 
-        adapter = CurrenciesRecyclerViewAdapter(viewModel::itemSelected)
-        binding.currencyList.adapter = adapter
-
-        setupListeners()
-        observeState()
-
-        setContentView(binding.root)
-    }
-
-    private fun setupListeners() = binding.run {
-        //FAB onClick
-        fabRefresh.setOnClickListener {
-            viewModel.updateData()
+        setContent {
+            MainScreen()
         }
+    }
+}
 
-        //source currency
-        leftCurrencyValue.addTextChangedListener { editable ->
-            val text = editable.toString()
+@Composable
+fun MainScreen(
+    viewModel: MainViewModel = hiltViewModel()
+) {
+    val state by viewModel.state.observeAsState()
 
-            if (leftCurrencyValue.hasFocus() && text.isNotBlank()) {
-                viewModel.changeDestination(editable.toString())
+    when (state) {
+        MainScreenState.Initial -> {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = "Data will be here as soon as possible.")
             }
         }
 
-        //destination currency
-        rightCurrencyValue.addTextChangedListener { editable ->
-            val text = editable.toString()
-            if (rightCurrencyValue.hasFocus() && text.isNotBlank()) {
-                viewModel.changeSource(text)
-            }
-        }
-    }
-
-    private fun observeState() {
-        viewModel.state.observe(this, ::applyState)
-    }
-
-    private fun applyState(state: MainScreenState) =
-        when (state) {
-            MainScreenState.Initial -> Unit
-
-            MainScreenState.Loading -> binding.run {
-                currencyList.isVisible = false
-                progressBar.isVisible = true
-                fabRefresh.isVisible = false
-            }
-
-            is MainScreenState.Content -> {
-                applyContent(state)
-            }
-
-            is MainScreenState.Error -> binding.run {
-                fabRefresh.isVisible = true
-                progressBar.isVisible = false
-                showError()
+        MainScreenState.Loading -> {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CircularProgressIndicator()
             }
         }
 
-    private fun applyContent(state: MainScreenState.Content) = binding.run {
-        currencyList.isVisible = true
-        progressBar.isVisible = false
-        fabRefresh.isVisible = true
-
-        adapter?.submitList(state.currenciesList)
-
-        state.leftCurrency.currency?.let { currency ->
-            leftCurrencyName.text = currency.charCode
-            leftCurrencyValue.isEnabled = true
+        is MainScreenState.Content -> {
+            MainScreenContent(state as MainScreenState.Content, viewModel)
         }
 
-        if (!leftCurrencyValue.hasFocus()) {
-            leftCurrencyValue.setText(state.leftCurrency.value.toString())
+        is MainScreenState.Error -> {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = """${stringResource(id = R.string.no_network)}
+                    ${(state as MainScreenState.Error).throwable}""".trimMargin()
+                )
+                OutlinedButton(onClick = viewModel::updateData) {
+                    Text(text = stringResource(id = R.string.retry))
+                }
+            }
         }
-
-        state.rightCurrency.currency?.let { currency ->
-            rightCurrencyName.text = currency.charCode
-            rightCurrencyValue.isEnabled = true
-        }
-
-        if (!rightCurrencyValue.hasFocus()) {
-            rightCurrencyValue.setText(state.rightCurrency.value.toString())
-        }
-
-        val currencyInputEnabled =
-            state.rightCurrency.currency != null && state.leftCurrency.currency != null
-
-        leftCurrencyValue.isEnabled = currencyInputEnabled
-        rightCurrencyValue.isEnabled = currencyInputEnabled
     }
+}
 
-    private fun showError() {
-        Snackbar
-            .make(binding.root, R.string.no_network, Snackbar.LENGTH_SHORT)
-            .show()
-    }
-
-    override fun onDestroy() {
-        binding.currencyList.adapter = null
-        adapter = null
-        super.onDestroy()
+@Composable
+fun MainScreenContent(state: MainScreenState.Content, viewModel: MainViewModel) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(all = 8.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp)
+            ) {
+                CurrencyInput(
+                    item = state.leftCurrency,
+                    onValueChange = viewModel::changeDestination,
+                    modifier = Modifier.weight(0.5f)
+                )
+                Spacer(modifier = Modifier.padding(horizontal = 8.dp))
+                CurrencyInput(
+                    item = state.rightCurrency,
+                    onValueChange = viewModel::changeSource,
+                    modifier = Modifier.weight(0.5f)
+                )
+            }
+        }
+        CurrencyList(currencies = state.currenciesList, onItemClick = viewModel::itemSelected)
     }
 }

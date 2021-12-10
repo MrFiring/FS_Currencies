@@ -8,7 +8,6 @@ import ru.mrfiring.fscurrencies.domain.DomainCurrency
 import ru.mrfiring.fscurrencies.domain.usecase.CalculateCurrencyValueUseCase
 import ru.mrfiring.fscurrencies.domain.usecase.GetCurrenciesContainerUseCase
 import javax.inject.Inject
-import kotlin.time.Duration
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -50,12 +49,19 @@ class MainViewModel @Inject constructor(
 
     fun updateData() = loadData(fromCache = false)
 
-    fun changeSource(text: String) {
-        val newValue = text.toDouble()
+    fun changeSource(newValue: String) {
         _state.ensureContent(
             doIf = { screenState ->
                 val oldValue = screenState.leftCurrency.value
                 if (oldValue == newValue) return@ensureContent
+
+                if (newValue.isEmpty()) {
+                    val newRightCurrency = screenState.rightCurrency.copy(value = newValue)
+                    _state.value = screenState.copy(
+                        rightCurrency = newRightCurrency
+                    )
+                    return@ensureContent
+                }
 
                 val curSourceCurrency = screenState.leftCurrency.currency
                 val curDestinationCurrency = screenState.rightCurrency.currency
@@ -63,14 +69,15 @@ class MainViewModel @Inject constructor(
                 val newDestinationValue = curDestinationCurrency?.let { dest ->
                     curSourceCurrency?.let { src ->
                         calculateCurrencyValueUseCase(
-                            sourceCount = newValue,
+                            sourceCount = newValue.toDouble(),
                             sourceCurrency = dest,
                             destinationCurrency = src
                         )
                     }
                 } ?: throw IllegalStateException("Both currencies must be determined")
 
-                val newLeftCurrency = screenState.leftCurrency.copy(value = newDestinationValue)
+                val newLeftCurrency =
+                    screenState.leftCurrency.copy(value = newDestinationValue.toString())
                 val newRightCurrency = screenState.rightCurrency.copy(value = newValue)
                 _state.value = screenState.copy(
                     leftCurrency = newLeftCurrency,
@@ -80,8 +87,9 @@ class MainViewModel @Inject constructor(
         )
     }
 
-    fun changeDestination(text: String) {
-        val newValue = text.toDouble()
+    fun changeDestination(newValue: String) {
+        if (newValue.isEmpty()) return
+
         _state.ensureContent(
             doIf = { screenState ->
                 val oldValue = screenState.rightCurrency.value

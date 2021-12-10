@@ -6,4 +6,5 @@
     <string name="select_currency">Выберите валюту</string>
 
     <string name="no_network">Не удалось получить данные с сервера</string>
+    <string name="retry">Повторить</string>
 </resources>
