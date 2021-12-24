@@ -52,7 +52,7 @@ class MainViewModel @Inject constructor(
     fun changeSource(newValue: String) {
         _state.ensureContent(
             doIf = { screenState ->
-                val oldValue = screenState.leftCurrency.value
+                val oldValue = screenState.rightCurrency.value
                 if (oldValue == newValue) return@ensureContent
 
                 if (newValue.isEmpty()) {
@@ -88,15 +88,39 @@ class MainViewModel @Inject constructor(
     }
 
     fun changeDestination(newValue: String) {
-        if (newValue.isEmpty()) return
-
         _state.ensureContent(
             doIf = { screenState ->
-                val oldValue = screenState.rightCurrency.value
+                val oldValue = screenState.leftCurrency.value
                 if (oldValue == newValue) return@ensureContent
 
-                val newRightCurrency = screenState.rightCurrency.copy(value = newValue)
-                _state.value = screenState.copy(rightCurrency = newRightCurrency)
+                if (newValue.isEmpty()) {
+                    val newLeftCurrency = screenState.leftCurrency.copy(value = newValue)
+                    _state.value = screenState.copy(
+                        leftCurrency = newLeftCurrency
+                    )
+                    return@ensureContent
+                }
+
+                val curSourceCurrency = screenState.leftCurrency.currency
+                val curDestinationCurrency = screenState.rightCurrency.currency
+
+                val newDestinationValue = curDestinationCurrency?.let { dest ->
+                    curSourceCurrency?.let { src ->
+                        calculateCurrencyValueUseCase(
+                            sourceCount = newValue.toDouble(),
+                            sourceCurrency = src,
+                            destinationCurrency = dest
+                        )
+                    }
+                } ?: throw IllegalStateException("Both currencies must be determined")
+
+                val newRightCurrency =
+                    screenState.rightCurrency.copy(value = newDestinationValue.toString())
+                val newLeftCurrency = screenState.leftCurrency.copy(value = newValue)
+                _state.value = screenState.copy(
+                    leftCurrency = newLeftCurrency,
+                    rightCurrency = newRightCurrency
+                )
             }
         )
     }
