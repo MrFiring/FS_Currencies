@@ -5,6 +5,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
@@ -21,7 +22,7 @@ fun CurrencyInput(
     val empty = item.currency == null
     var focused by remember { mutableStateOf(false) }
 
-    Column(modifier) {
+    Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = item.currency?.name ?: stringResource(R.string.select_currency))
         OutlinedTextField(
             value = item.value,
