@@ -36,9 +36,7 @@ class MainActivity : AppCompatActivity() {
 }
 
 @Composable
-fun MainScreen(
-    viewModel: MainViewModel = hiltViewModel()
-) {
+fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
     val state by viewModel.state.observeAsState()
 
     when (state) {
